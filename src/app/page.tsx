@@ -22,6 +22,8 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { Document as DocxDocument, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel } from 'docx';
+import { saveAs } from 'file-saver';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -104,6 +106,41 @@ export default function Home() {
     });
     
     doc.save(`TwitScrapX_Report_${Date.now()}.pdf`);
+  };
+
+  const generateDOCX = async () => {
+    const doc = new DocxDocument({
+      sections: [{
+        properties: {},
+        children: [
+          new Paragraph({
+            text: "TwitScrapX Extraction Report",
+            heading: HeadingLevel.HEADING_1,
+            alignment: AlignmentType.CENTER,
+          }),
+          new Paragraph({
+            children: [
+              new TextRun({ text: `Source URL: ${url}`, bold: true }),
+              new TextRun({ text: `\nDate: ${new Date().toLocaleString()}`, break: 1 }),
+            ],
+            spacing: { after: 400 },
+          }),
+          ...results.flatMap(result => [
+            new Paragraph({
+              children: [
+                new TextRun({ text: `[${result.date}] `, bold: true, color: "00f2ff" }),
+                new TextRun({ text: `${result.type}: `, bold: true }),
+                new TextRun({ text: result.text }),
+              ],
+              spacing: { before: 200, after: 100 },
+            })
+          ]),
+        ],
+      }],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, `TwitScrapX_Report_${Date.now()}.docx`);
   };
 
   return (
@@ -218,6 +255,12 @@ export default function Home() {
                     <TrendingUp className="text-primary w-6 h-6" /> Extraction Feed
                   </h2>
                   <div className="flex gap-3">
+                    <button 
+                      onClick={generateDOCX}
+                      className="flex items-center gap-2 px-4 py-2 glass rounded-lg hover:bg-white/10 transition-all border border-secondary/40 text-white text-sm font-bold"
+                    >
+                      <FileText className="w-4 h-4 text-secondary" /> DOWNLOAD DOCX
+                    </button>
                     <button 
                       onClick={generatePDF}
                       className="flex items-center gap-2 px-4 py-2 glass rounded-lg hover:bg-white/10 transition-all border border-primary/20 text-primary text-sm font-bold"
