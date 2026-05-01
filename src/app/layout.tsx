@@ -4,7 +4,7 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export military const metadata: Metadata = {
+export const metadata: Metadata = {
   title: "TwitScrapX Pro | AI-Powered Web Archiving",
   description: "Automatically scrape, organize, and archive web content with high precision.",
 };
