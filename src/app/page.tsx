@@ -101,7 +101,7 @@ export default function Home() {
       startY: 45,
       head: [['Date', 'Type', 'Content']],
       body: results.map(r => [r.date, r.type, r.text]),
-      headStyles: { fillStyle: 'f', fillColor: [112, 0, 255] },
+      headStyles: { fillColor: [112, 0, 255] },
       alternateRowStyles: { fillColor: [240, 240, 240] },
     });
     
