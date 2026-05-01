@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import html2canvas from 'html2canvas';
 import { Document as DocxDocument, Packer, Paragraph, TextRun, AlignmentType, HeadingLevel } from 'docx';
 import { saveAs } from 'file-saver';
 import { clsx, type ClassValue } from 'clsx';
@@ -85,29 +86,29 @@ export default function Home() {
     }, 1500);
   };
 
-  const generatePDF = () => {
-    const doc = new jsPDF();
-    
-    // Header
-    doc.setFontSize(20);
-    doc.setTextColor(0, 242, 255);
-    doc.text('TwitScrapX Extraction Report', 14, 22);
-    
-    doc.setFontSize(10);
-    doc.setTextColor(100);
-    doc.text(`Source: ${url}`, 14, 30);
-    doc.text(`Date: ${new Date().toLocaleString()}`, 14, 35);
-    
-    // Table
-    autoTable(doc, {
-      startY: 45,
-      head: [['Date', 'Type', 'Content']],
-      body: results.map(r => [r.date, r.type, r.text]),
-      headStyles: { fillColor: [112, 0, 255] },
-      alternateRowStyles: { fillColor: [240, 240, 240] },
-    });
-    
-    doc.save(`TwitScrapX_Report_${Date.now()}.pdf`);
+  const generatePDF = async () => {
+    const element = document.getElementById('results-feed');
+    if (!element) return;
+
+    try {
+      const canvas = await html2canvas(element, {
+        backgroundColor: '#0a0b1e',
+        scale: 2,
+        logging: false,
+        useCORS: true
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`TwitScrapX_Report_${Date.now()}.pdf`);
+    } catch (err) {
+      console.error('PDF Generation failed:', err);
+    }
   };
 
   const generateDOCX = async () => {
@@ -270,6 +271,7 @@ export default function Home() {
           <AnimatePresence>
             {results.length > 0 && (
               <motion.div 
+                id="results-feed"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-6"
