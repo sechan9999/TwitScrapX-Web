@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
   --background: #0a0b1e;
@@ -27,26 +25,4 @@ body {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-}
-
-.neo-glow {
-  box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
-}
-
-.mesh-gradient {
-  background: radial-gradient(at 0% 0%, rgba(112, 0, 255, 0.15) 0, transparent 50%),
-              radial-gradient(at 100% 0%, rgba(0, 242, 255, 0.15) 0, transparent 50%),
-              radial-gradient(at 100% 100%, rgba(255, 0, 200, 0.15) 0, transparent 50%),
-              radial-gradient(at 0% 100%, rgba(112, 0, 255, 0.15) 0, transparent 50%);
-}
-
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
-}
-
-.float-animation {
-  animation: float 6s ease-in-out infinite;
 }
