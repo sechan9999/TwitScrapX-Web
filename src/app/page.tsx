@@ -34,6 +34,8 @@ function cn(...inputs: ClassValue[]) {
 
 export default function Home() {
   const [url, setUrl] = useState('');
+  const [startDate, setStartDate] = useState('2024-12-03');
+  const [endDate, setEndDate] = useState('2025-04-04');
   const [isScraping, setIsScraping] = useState(false);
   const [results, setResults] = useState<any[]>([]);
   const [history, setHistory] = useState<any[]>([]);
@@ -52,7 +54,7 @@ export default function Home() {
       const response = await fetch('/api/scrape', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url, startDate, endDate }),
       });
       const data = await response.json();
       if (data.results) {
@@ -215,8 +217,7 @@ export default function Home() {
 
         {/* Right Section: Search & Results */}
         <div className="lg:col-span-3 space-y-8">
-          {/* Search Area */}
-          <div className="w-full">
+          <div className="w-full space-y-4">
             <form onSubmit={handleScrape} className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
               <div className="relative glass rounded-2xl p-2 flex flex-col md:flex-row gap-2">
@@ -240,6 +241,29 @@ export default function Home() {
                 </button>
               </div>
             </form>
+
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 flex items-center gap-3 glass px-4 py-2 rounded-xl">
+                <Calendar className="w-4 h-4 text-gray-500" />
+                <span className="text-xs text-gray-500 font-bold uppercase">Since:</span>
+                <input 
+                  type="date" 
+                  className="bg-transparent border-none focus:ring-0 text-sm text-white w-full"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </div>
+              <div className="flex-1 flex items-center gap-3 glass px-4 py-2 rounded-xl">
+                <Calendar className="w-4 h-4 text-gray-500" />
+                <span className="text-xs text-gray-500 font-bold uppercase">Until:</span>
+                <input 
+                  type="date" 
+                  className="bg-transparent border-none focus:ring-0 text-sm text-white w-full"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </div>
+            </div>
           </div>
 
           {/* Results Area */}
